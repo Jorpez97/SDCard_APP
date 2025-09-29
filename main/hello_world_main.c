@@ -15,10 +15,12 @@
 #include "esp_log.h"
 #include "..\..\..\components\esp_driver_sdmmc\include\driver\sdmmc_host.h"
 #include "..\..\..\components\sdmmc\include\sdmmc_cmd.h"
+#include "SDCardRead.h"
 
 sdmmc_card_t sd_card;
-
-static const char* tag = "SDCardReaderModdddule";
+   sdmmc_host_t  sd_card_host = SDMMC_HOST_DEFAULT();
+      sdmmc_slot_config_t  slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
+ const char* tag = "SDCardReaderModdddule";
 
 esp_err_t init_sd_host(sdmmc_slot_config_t* slot_config)
 {
@@ -43,11 +45,11 @@ esp_err_t init_sd_card(sdmmc_host_t* sd_card_host)
 
 void app_main(void)
 { 
-   sdmmc_host_t  sd_card_host = SDMMC_HOST_DEFAULT();
+
   ESP_LOGI(tag, "Failed WITH CODE ");
    sdmmc_host_init();
   ESP_LOGI(tag, "Failed WITH CODE ");
-   sdmmc_slot_config_t  slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
+
   slot_config.width = 1;
   slot_config.d2 = 32;
    ESP_LOGI(tag, "Failed WITH CODE ");
@@ -64,6 +66,10 @@ void app_main(void)
   {
    ESP_LOGI(tag, "FAILED TO GET CARD INFO!");
   }
+
+  ESP_LOGI(tag, "HERER");
+   mount_to_sd_card();
+    ESP_LOGI(tag, "AFTER");
    return;
 }
 //e: 379 SN: 1899340017

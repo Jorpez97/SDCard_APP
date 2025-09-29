@@ -5883,6 +5883,139 @@
             {
                 "children": [
                     {
+                        "children": [],
+                        "depends_on": "!FREERTOS_PLACE_FUNCTIONS_INTO_FLASH && SOC_GPSPI_SUPPORTED",
+                        "help": "Normally only the ISR of SPI master is placed in the IRAM, so that it\ncan work without the flash when interrupt is triggered.\nFor other functions, there's some possibility that the flash cache\nmiss when running inside and out of SPI functions, which may increase\nthe interval of SPI transactions.\nEnable this to put ``queue_trans``, ``get_trans_result`` and\n``transmit`` functions into the IRAM to avoid possible cache miss.\n\nThis configuration won't be available if `CONFIG_FREERTOS_PLACE_FUNCTIONS_INTO_FLASH` is enabled.\n\nDuring unit test, this is enabled to measure the ideal case of api.",
+                        "id": "SPI_MASTER_IN_IRAM",
+                        "name": "SPI_MASTER_IN_IRAM",
+                        "range": null,
+                        "title": "Place transmitting functions of SPI master into IRAM",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "!HEAP_PLACE_FUNCTION_INTO_FLASH && SOC_GPSPI_SUPPORTED",
+                        "help": "Place the SPI master ISR in to IRAM to avoid possible cache miss.\n\nEnabling this configuration is possible only when HEAP_PLACE_FUNCTION_INTO_FLASH\nis disabled since the spi master uses can allocate transactions buffers into DMA\nmemory section using the heap component API that ipso facto has to be placed in IRAM.\n\nAlso you can forbid the ISR being disabled during flash writing\naccess, by add ESP_INTR_FLAG_IRAM when initializing the driver.",
+                        "id": "SPI_MASTER_ISR_IN_IRAM",
+                        "name": "SPI_MASTER_ISR_IN_IRAM",
+                        "range": null,
+                        "title": "Place SPI master ISR function into IRAM",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "SOC_GPSPI_SUPPORTED",
+                        "help": "Normally only the ISR of SPI slave is placed in the IRAM, so that it\ncan work without the flash when interrupt is triggered.\nFor other functions, there's some possibility that the flash cache\nmiss when running inside and out of SPI functions, which may increase\nthe interval of SPI transactions.\nEnable this to put ``queue_trans``, ``get_trans_result`` and\n``transmit`` functions into the IRAM to avoid possible cache miss.",
+                        "id": "SPI_SLAVE_IN_IRAM",
+                        "name": "SPI_SLAVE_IN_IRAM",
+                        "range": null,
+                        "title": "Place transmitting functions of SPI slave into IRAM",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "SOC_GPSPI_SUPPORTED",
+                        "help": "Place the SPI slave ISR in to IRAM to avoid possible cache miss.\n\nAlso you can forbid the ISR being disabled during flash writing\naccess, by add ESP_INTR_FLAG_IRAM when initializing the driver.",
+                        "id": "SPI_SLAVE_ISR_IN_IRAM",
+                        "name": "SPI_SLAVE_ISR_IN_IRAM",
+                        "range": null,
+                        "title": "Place SPI slave ISR function into IRAM",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": "SOC_GPSPI_SUPPORTED",
+                "id": "component-config-esp-driver-spi-configurations",
+                "title": "ESP-Driver:SPI Configurations",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": "!RINGBUF_PLACE_ISR_FUNCTIONS_INTO_FLASH",
+                        "help": "If this option is not selected, UART interrupt will be disabled for a long time and\nmay cause data lost when doing spi flash operation.",
+                        "id": "UART_ISR_IN_IRAM",
+                        "name": "UART_ISR_IN_IRAM",
+                        "range": null,
+                        "title": "Place UART ISR function into IRAM",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-esp-driver-uart-configurations",
+                "title": "ESP-Driver:UART Configurations",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "If this option is not selected, UHCI interrupt will be disabled for a long time and\nmay cause data lost when doing spi flash operation.",
+                        "id": "UHCI_ISR_HANDLER_IN_IRAM",
+                        "name": "UHCI_ISR_HANDLER_IN_IRAM",
+                        "range": null,
+                        "title": "Place UHCI ISR function into IRAM",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Enable this option to allow the ISR for UHCI to execute even when the cache is disabled.\nThis can be useful in scenarios where the cache might be turned off, but the UHCI\nfunctionality is still required to operate correctly.",
+                        "id": "UHCI_ISR_CACHE_SAFE",
+                        "name": "UHCI_ISR_CACHE_SAFE",
+                        "range": null,
+                        "title": "Allow UHCI ISR to execute when cache is disabled",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "whether to enable the debug log message for UHCI driver.\nNote that, this option only controls the UHCI driver log, won't affect other drivers.",
+                        "id": "UHCI_ENABLE_DEBUG_LOG",
+                        "name": "UHCI_ENABLE_DEBUG_LOG",
+                        "range": null,
+                        "title": "Enable debug log",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-esp-driver-uhci-configurations",
+                "title": "ESP-Driver:UHCI Configurations",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "PM_ENABLE && ESP_CONSOLE_USB_SERIAL_JTAG_ENABLED && !SOC_USB_SERIAL_JTAG_SUPPORT_LIGHT_SLEEP && USJ_ENABLE_USB_SERIAL_JTAG && SOC_USB_SERIAL_JTAG_SUPPORTED",
+                                "help": "If enabled, the chip will constantly monitor the connection status of the USB Serial/JTAG port. As long\nas the USB Serial/JTAG is connected, a ESP_PM_NO_LIGHT_SLEEP power management lock will be acquired to\nprevent the system from entering light sleep.\nThis option can be useful if serial monitoring is needed via USB Serial/JTAG while power management is\nenabled, as the USB Serial/JTAG cannot work under light sleep and after waking up from light sleep.\nNote. This option can only control the automatic Light-Sleep behavior. If esp_light_sleep_start() is\ncalled manually from the program, enabling this option will not prevent light sleep entry even if the\nUSB Serial/JTAG is in use.",
+                                "id": "USJ_NO_AUTO_LS_ON_CONNECTION",
+                                "name": "USJ_NO_AUTO_LS_ON_CONNECTION",
+                                "range": null,
+                                "title": "Don't enter the automatic light sleep when USB Serial/JTAG port is connected",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": "SOC_USB_SERIAL_JTAG_SUPPORTED",
+                        "help": "The USB-Serial-JTAG module on ESP chips is turned on by default after power-on.\nIf your application does not need it and not rely on it to be used as system\nconsole or use the built-in JTAG for debugging, you can disable this option,\nthen the clock of this module will be disabled at startup, which will save\nsome power consumption.",
+                        "id": "USJ_ENABLE_USB_SERIAL_JTAG",
+                        "name": "USJ_ENABLE_USB_SERIAL_JTAG",
+                        "range": null,
+                        "title": "Enable USB-Serial-JTAG Module",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": "SOC_USB_SERIAL_JTAG_SUPPORTED",
+                "id": "component-config-esp-driver-usb-serial-jtag-configuration",
+                "title": "ESP-Driver:USB Serial/JTAG Configuration",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
                         "children": [
                             {
                                 "children": [
@@ -7146,6 +7279,35 @@
                 "depends_on": null,
                 "id": "component-config-power-management",
                 "title": "Power Management",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "RINGBUF_PLACE_FUNCTIONS_INTO_FLASH",
+                                "help": "Place ISR ringbuf functions (like xRingbufferSendFromISR/xRingbufferReceiveFromISR) into flash.\nThis frees up IRAM, but the functions can no longer be called when the cache is disabled\nor from an IRAM interrupt context.\n\nThis option is not compatible with ESP-IDF drivers which are configured to\nrun the ISR from an IRAM context, e.g. CONFIG_UART_ISR_IN_IRAM.",
+                                "id": "RINGBUF_PLACE_ISR_FUNCTIONS_INTO_FLASH",
+                                "name": "RINGBUF_PLACE_ISR_FUNCTIONS_INTO_FLASH",
+                                "range": null,
+                                "title": "Place ISR ringbuf functions into flash",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Place non-ISR ringbuf functions (like xRingbufferCreate/xRingbufferSend) into flash.\nThis frees up IRAM, but the functions can no longer be called when the cache is disabled.",
+                        "id": "RINGBUF_PLACE_FUNCTIONS_INTO_FLASH",
+                        "name": "RINGBUF_PLACE_FUNCTIONS_INTO_FLASH",
+                        "range": null,
+                        "title": "Place non-ISR ringbuf functions into flash",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-esp-ringbuf",
+                "title": "ESP Ringbuf",
                 "type": "menu"
             },
             {
@@ -8516,6 +8678,634 @@
                 "depends_on": null,
                 "id": "component-config-esp-timer-high-resolution-timer-",
                 "title": "ESP Timer (High Resolution Timer)",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Number of volumes (logical drives) to use.",
+                        "id": "FATFS_VOLUME_COUNT",
+                        "name": "FATFS_VOLUME_COUNT",
+                        "range": [
+                            1,
+                            10
+                        ],
+                        "title": "Number of volumes",
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_LONG_FILENAMES>",
+                                "help": null,
+                                "id": "FATFS_LFN_NONE",
+                                "name": "FATFS_LFN_NONE",
+                                "range": null,
+                                "title": "No long filenames",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_LONG_FILENAMES>",
+                                "help": null,
+                                "id": "FATFS_LFN_HEAP",
+                                "name": "FATFS_LFN_HEAP",
+                                "range": null,
+                                "title": "Long filename buffer in heap",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_LONG_FILENAMES>",
+                                "help": null,
+                                "id": "FATFS_LFN_STACK",
+                                "name": "FATFS_LFN_STACK",
+                                "range": null,
+                                "title": "Long filename buffer on stack",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Support long filenames in FAT. Long filename data increases\nmemory usage. FATFS can be configured to store the buffer for\nlong filename data in stack or heap.",
+                        "id": "component-config-fat-filesystem-support-long-filename-support",
+                        "name": "FATFS_LONG_FILENAMES",
+                        "title": "Long filename support",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_SECTOR_SIZE>",
+                                "help": null,
+                                "id": "FATFS_SECTOR_512",
+                                "name": "FATFS_SECTOR_512",
+                                "range": null,
+                                "title": "512",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_SECTOR_SIZE>",
+                                "help": null,
+                                "id": "FATFS_SECTOR_4096",
+                                "name": "FATFS_SECTOR_4096",
+                                "range": null,
+                                "title": "4096",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Specify the size of the sector in bytes for FATFS partition generator.",
+                        "id": "component-config-fat-filesystem-support-sector-size",
+                        "name": "FATFS_SECTOR_SIZE",
+                        "title": "Sector size",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_DYNAMIC",
+                                "name": "FATFS_CODEPAGE_DYNAMIC",
+                                "range": null,
+                                "title": "Dynamic (all code pages supported)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_437",
+                                "name": "FATFS_CODEPAGE_437",
+                                "range": null,
+                                "title": "US (CP437)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_720",
+                                "name": "FATFS_CODEPAGE_720",
+                                "range": null,
+                                "title": "Arabic (CP720)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_737",
+                                "name": "FATFS_CODEPAGE_737",
+                                "range": null,
+                                "title": "Greek (CP737)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_771",
+                                "name": "FATFS_CODEPAGE_771",
+                                "range": null,
+                                "title": "KBL (CP771)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_775",
+                                "name": "FATFS_CODEPAGE_775",
+                                "range": null,
+                                "title": "Baltic (CP775)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_850",
+                                "name": "FATFS_CODEPAGE_850",
+                                "range": null,
+                                "title": "Latin 1 (CP850)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_852",
+                                "name": "FATFS_CODEPAGE_852",
+                                "range": null,
+                                "title": "Latin 2 (CP852)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_855",
+                                "name": "FATFS_CODEPAGE_855",
+                                "range": null,
+                                "title": "Cyrillic (CP855)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_857",
+                                "name": "FATFS_CODEPAGE_857",
+                                "range": null,
+                                "title": "Turkish (CP857)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_860",
+                                "name": "FATFS_CODEPAGE_860",
+                                "range": null,
+                                "title": "Portuguese (CP860)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_861",
+                                "name": "FATFS_CODEPAGE_861",
+                                "range": null,
+                                "title": "Icelandic (CP861)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_862",
+                                "name": "FATFS_CODEPAGE_862",
+                                "range": null,
+                                "title": "Hebrew (CP862)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_863",
+                                "name": "FATFS_CODEPAGE_863",
+                                "range": null,
+                                "title": "Canadian French (CP863)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_864",
+                                "name": "FATFS_CODEPAGE_864",
+                                "range": null,
+                                "title": "Arabic (CP864)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_865",
+                                "name": "FATFS_CODEPAGE_865",
+                                "range": null,
+                                "title": "Nordic (CP865)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_866",
+                                "name": "FATFS_CODEPAGE_866",
+                                "range": null,
+                                "title": "Russian (CP866)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_869",
+                                "name": "FATFS_CODEPAGE_869",
+                                "range": null,
+                                "title": "Greek 2 (CP869)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_932",
+                                "name": "FATFS_CODEPAGE_932",
+                                "range": null,
+                                "title": "Japanese (DBCS) (CP932)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_936",
+                                "name": "FATFS_CODEPAGE_936",
+                                "range": null,
+                                "title": "Simplified Chinese (DBCS) (CP936)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_949",
+                                "name": "FATFS_CODEPAGE_949",
+                                "range": null,
+                                "title": "Korean (DBCS) (CP949)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_CHOOSE_CODEPAGE>",
+                                "help": null,
+                                "id": "FATFS_CODEPAGE_950",
+                                "name": "FATFS_CODEPAGE_950",
+                                "range": null,
+                                "title": "Traditional Chinese (DBCS) (CP950)",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "OEM code page used for file name encodings.\n\nIf \"Dynamic\" is selected, code page can be chosen at runtime using\nf_setcp function. Note that choosing this option will increase\napplication size by ~480kB.",
+                        "id": "component-config-fat-filesystem-support-oem-code-page",
+                        "name": "FATFS_CHOOSE_CODEPAGE",
+                        "title": "OEM Code Page",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "FATFS_CODEPAGE",
+                        "name": "FATFS_CODEPAGE",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "!FATFS_LFN_NONE",
+                        "help": "Maximum long filename length. Can be reduced to save RAM.",
+                        "id": "FATFS_MAX_LFN",
+                        "name": "FATFS_MAX_LFN",
+                        "range": null,
+                        "title": "Max long filename length",
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_API_ENCODING>",
+                                "help": null,
+                                "id": "FATFS_API_ENCODING_ANSI_OEM",
+                                "name": "FATFS_API_ENCODING_ANSI_OEM",
+                                "range": null,
+                                "title": "API uses ANSI/OEM encoding",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_API_ENCODING>",
+                                "help": null,
+                                "id": "FATFS_API_ENCODING_UTF_8",
+                                "name": "FATFS_API_ENCODING_UTF_8",
+                                "range": null,
+                                "title": "API uses UTF-8 encoding",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": "!FATFS_LFN_NONE",
+                        "help": "Choose encoding for character and string arguments/returns when using\nFATFS APIs. The encoding of arguments will usually depend on text\neditor settings.",
+                        "id": "component-config-fat-filesystem-support-api-character-encoding",
+                        "name": "FATFS_API_ENCODING",
+                        "title": "API character encoding",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "This option sets the FATFS configuration value _FS_LOCK.\nThe option _FS_LOCK switches file lock function to control duplicated file open\nand illegal operation to open objects.\n\n* 0: Disable file lock function. To avoid volume corruption, application\nshould avoid illegal open, remove and rename to the open objects.\n\n* >0: Enable file lock function. The value defines how many files/sub-directories\ncan be opened simultaneously under file lock control.\n\nNote that the file lock control is independent of re-entrancy.",
+                        "id": "FATFS_FS_LOCK",
+                        "name": "FATFS_FS_LOCK",
+                        "range": [
+                            0,
+                            65535
+                        ],
+                        "title": "Number of simultaneously open files protected by lock function",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "This option sets FATFS configuration value _FS_TIMEOUT, scaled to milliseconds.\nSets the number of milliseconds FATFS will wait to acquire a mutex when\noperating on an open file. For example, if one task is performing a lengthy\noperation, another task will wait for the first task to release the lock,\nand time out after amount of time set by this option.",
+                        "id": "FATFS_TIMEOUT_MS",
+                        "name": "FATFS_TIMEOUT_MS",
+                        "range": null,
+                        "title": "Timeout for acquiring a file lock, ms",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "This option affects FATFS configuration value _FS_TINY.\n\nIf this option is set, _FS_TINY is 0, and each open file has its own cache,\nsize of the cache is equal to the _MAX_SS variable (512 or 4096 bytes).\nThis option uses more RAM if more than 1 file is open, but needs less reads\nand writes to the storage for some operations.\n\nIf this option is not set, _FS_TINY is 1, and single cache is used for\nall open files, size is also equal to _MAX_SS variable. This reduces the\namount of heap used when multiple files are open, but increases the number\nof read and write operations which FATFS needs to make.",
+                        "id": "FATFS_PER_FILE_CACHE",
+                        "name": "FATFS_PER_FILE_CACHE",
+                        "range": null,
+                        "title": "Use separate cache for each file",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "SPIRAM_USE_CAPS_ALLOC || SPIRAM_USE_MALLOC",
+                        "help": "When the option is enabled, internal buffers used by FATFS will be allocated\nfrom external RAM. If the allocation from external RAM fails, the buffer will\nbe allocated from the internal RAM.\nDisable this option if optimizing for performance. Enable this option if\noptimizing for internal memory size.",
+                        "id": "FATFS_ALLOC_PREFER_EXTRAM",
+                        "name": "FATFS_ALLOC_PREFER_EXTRAM",
+                        "range": null,
+                        "title": "Prefer external RAM when allocating FATFS buffers",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "The fast seek feature enables fast backward/long seek operations without\nFAT access by using an in-memory CLMT (cluster link map table).\nPlease note, fast-seek is only allowed for read-mode files, if a\nfile is opened in write-mode, the seek mechanism will automatically fallback\nto the default implementation.",
+                        "id": "FATFS_USE_FASTSEEK",
+                        "name": "FATFS_USE_FASTSEEK",
+                        "range": null,
+                        "title": "Enable fast seek algorithm when using lseek function through VFS FAT",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_USE_STRFUNC_CHOICE>",
+                                "help": null,
+                                "id": "FATFS_USE_STRFUNC_NONE",
+                                "name": "FATFS_USE_STRFUNC_NONE",
+                                "range": null,
+                                "title": "0:Disable",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_USE_STRFUNC_CHOICE>",
+                                "help": null,
+                                "id": "FATFS_USE_STRFUNC_WITHOUT_CRLF_CONV",
+                                "name": "FATFS_USE_STRFUNC_WITHOUT_CRLF_CONV",
+                                "range": null,
+                                "title": "1:Enable without LF-CRLF conversion",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_USE_STRFUNC_CHOICE>",
+                                "help": null,
+                                "id": "FATFS_USE_STRFUNC_WITH_CRLF_CONV",
+                                "name": "FATFS_USE_STRFUNC_WITH_CRLF_CONV",
+                                "range": null,
+                                "title": "2:Enable with LF-CRLF conversion",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "These are specialized alternatives to stdio functions for working\ndirectly with FATFS without VFS.  Legacy code may need functions,\nbut for new development, it is advised to use stdio under VFS.\n\n0: Disable. FF_PRINT_LLI, FF_PRINT_FLOAT and FF_STRF_ENCODE have no effect.\n1: Enable without LF-CRLF conversion.\n2: Enable with LF-CRLF conversion.",
+                        "id": "component-config-fat-filesystem-support-enable-string-functions-f_gets-f_putc-f_puts-and-f_printf-",
+                        "name": "FATFS_USE_STRFUNC_CHOICE",
+                        "title": "Enable string functions, f_gets(), f_putc(), f_puts() and f_printf()",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "!FATFS_USE_STRFUNC_NONE",
+                        "help": null,
+                        "id": "FATFS_PRINT_LLI",
+                        "name": "FATFS_PRINT_LLI",
+                        "range": null,
+                        "title": "Make fatfs f_printf() support long long argument",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "!FATFS_USE_STRFUNC_NONE",
+                        "help": null,
+                        "id": "FATFS_PRINT_FLOAT",
+                        "name": "FATFS_PRINT_FLOAT",
+                        "range": null,
+                        "title": "Make fatfs f_printf() support floating point argument",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_STRF_ENCODE_CHOICE>",
+                                "help": null,
+                                "id": "FATFS_STRF_ENCODE_ANSI",
+                                "name": "FATFS_STRF_ENCODE_ANSI",
+                                "range": null,
+                                "title": "0:ANSI/OEM in current CP",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_STRF_ENCODE_CHOICE>",
+                                "help": null,
+                                "id": "FATFS_STRF_ENCODE_UTF16LE",
+                                "name": "FATFS_STRF_ENCODE_UTF16LE",
+                                "range": null,
+                                "title": "1:Unicode in UTF-16LE",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_STRF_ENCODE_CHOICE>",
+                                "help": null,
+                                "id": "FATFS_STRF_ENCODE_UTF16BE",
+                                "name": "FATFS_STRF_ENCODE_UTF16BE",
+                                "range": null,
+                                "title": "2:Unicode in UTF-16BE",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice FATFS_STRF_ENCODE_CHOICE>",
+                                "help": null,
+                                "id": "FATFS_STRF_ENCODE_UTF8",
+                                "name": "FATFS_STRF_ENCODE_UTF8",
+                                "range": null,
+                                "title": "3:Unicode in UTF-8",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": "!FATFS_LFN_NONE && !FATFS_USE_STRFUNC_NONE",
+                        "help": "When FF_LFN_UNICODE >= 1 with LFN enabled, string functions convert the character\nencoding in it. FF_STRF_ENCODE selects assumption of character encoding ON THE FILE\nto be read/written via those functions.\n0: ANSI/OEM in current CP\n1: Unicode in UTF-16LE\n2: Unicode in UTF-16BE\n3: Unicode in UTF-8",
+                        "id": "component-config-fat-filesystem-support-fatfs-string-functions-convert-character-encoding",
+                        "name": "FATFS_STRF_ENCODE_CHOICE",
+                        "title": "FatFS string functions: convert character encoding",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "FATFS_USE_FASTSEEK",
+                        "help": "If fast seek algorithm is enabled, this defines the size of\nCLMT buffer used by this algorithm in 32-bit word units.\nThis value should be chosen based on prior knowledge of\nmaximum elements of each file entry would store.",
+                        "id": "FATFS_FAST_SEEK_BUFFER_SIZE",
+                        "name": "FATFS_FAST_SEEK_BUFFER_SIZE",
+                        "range": null,
+                        "title": "Fast seek CLMT buffer size",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "If set to 0, the 'newlib' library's default size (BLKSIZ) is used (128 B).\nIf set to a non-zero value, the value is used as the block size.\nDefault file buffer size is set to this value\nand the buffer is allocated when first attempt of reading/writing to a file is made.\nIncreasing this value improves fread() speed, however the heap usage is increased as well.\n\nNOTE: The block size value is shared by all the filesystem functions\naccessing target media for given file descriptor!\nSee 'Improving I/O performance' section of 'Maximizing Execution Speed' documentation page\nfor more details.",
+                        "id": "FATFS_VFS_FSTAT_BLKSIZE",
+                        "name": "FATFS_VFS_FSTAT_BLKSIZE",
+                        "range": null,
+                        "title": "Default block size",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Enables automatic calling of f_sync() to flush recent file changes after each call of vfs_fat_write(),\nvfs_fat_pwrite(), vfs_fat_link(), vfs_fat_truncate() and vfs_fat_ftruncate() functions.\nThis feature improves file-consistency and size reporting accuracy for the FatFS,\nat a price on decreased performance due to frequent disk operations",
+                        "id": "FATFS_IMMEDIATE_FSYNC",
+                        "name": "FATFS_IMMEDIATE_FSYNC",
+                        "range": null,
+                        "title": "Enable automatic f_sync",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Allows FATFS volume label to be specified using f_setlabel",
+                        "id": "FATFS_USE_LABEL",
+                        "name": "FATFS_USE_LABEL",
+                        "range": null,
+                        "title": "Use FATFS volume label",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "If enabled, the whole link operation (including file copying) is performed under lock.\nThis ensures that the link operation is atomic, but may cause performance for large files.\nIt may create less fragmented file copy.",
+                        "id": "FATFS_LINK_LOCK",
+                        "name": "FATFS_LINK_LOCK",
+                        "range": null,
+                        "title": "Perform the whole link operation under lock",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "If enabled, the buffers used by FATFS will be allocated separately from the rest of the structure.\nThis option is useful when using multiple FATFS instances with different\nsector sizes, as the buffers will be allocated according to the sector size.\nIf disabled, the greatest sector size will be used for all FATFS instances.\n(In most cases, this would be the sector size of Wear Levelling library)\nThis might cause more memory to be used than necessary.",
+                        "id": "FATFS_USE_DYN_BUFFERS",
+                        "name": "FATFS_USE_DYN_BUFFERS",
+                        "range": null,
+                        "title": "Use dynamic buffers",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": null,
+                                "help": "If 1, the file system will not trust the free cluster count in the FSINFO (in FATFS struct).\nThis may result in more accurate output from `f_getfree()` function but increased overhead.",
+                                "id": "FATFS_DONT_TRUST_FREE_CLUSTER_CNT",
+                                "name": "FATFS_DONT_TRUST_FREE_CLUSTER_CNT",
+                                "range": [
+                                    0,
+                                    1
+                                ],
+                                "title": "Don't trust free cluster count",
+                                "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": null,
+                                "help": "If 1, the file system will not trust the last allocated cluster number in the FSINFO (in FATFS struct).\nThis may result in more accurate output from `f_getfree()` function but increased overhead.",
+                                "id": "FATFS_DONT_TRUST_LAST_ALLOC",
+                                "name": "FATFS_DONT_TRUST_LAST_ALLOC",
+                                "range": [
+                                    0,
+                                    1
+                                ],
+                                "title": "Don't trust allocated cluster number",
+                                "type": "int"
+                            }
+                        ],
+                        "depends_on": null,
+                        "id": "component-config-fat-filesystem-support-file-system-free-space-calculation-behavior",
+                        "title": "File system free space calculation behavior",
+                        "type": "menu"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-fat-filesystem-support",
+                "title": "FAT Filesystem support",
                 "type": "menu"
             },
             {
@@ -12787,6 +13577,205 @@
                 "depends_on": "!APP_BUILD_TYPE_PURE_RAM_APP",
                 "id": "component-config-spi-flash-driver",
                 "title": "SPI Flash driver",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "VFS_SUPPORT_IO",
+                                "help": "If enabled, the following functions are provided by the VFS component.\n\nstat, link, unlink, rename, utime, access, truncate, rmdir, mkdir,\nopendir, closedir, readdir, readdir_r, seekdir, telldir, rewinddir\n\nFilesystem drivers can then be registered to handle these functions\nfor specific paths.\n\nDisabling this option can save memory when the support for these functions\nis not required.",
+                                "id": "VFS_SUPPORT_DIR",
+                                "name": "VFS_SUPPORT_DIR",
+                                "range": null,
+                                "title": "Provide directory related functions",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "VFS_SUPPORT_SELECT",
+                                        "help": "Select() related functions might produce an inconveniently lot of\ndebug outputs when one sets the default log level to DEBUG or higher.\nIt is possible to suppress these debug outputs by enabling this\noption.",
+                                        "id": "VFS_SUPPRESS_SELECT_DEBUG_OUTPUT",
+                                        "name": "VFS_SUPPRESS_SELECT_DEBUG_OUTPUT",
+                                        "range": null,
+                                        "title": "Suppress select() related debug outputs",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "VFS_SUPPORT_SELECT",
+                                        "help": "If enabled, VFS driver select() callback function will be placed in IRAM.",
+                                        "id": "VFS_SELECT_IN_RAM",
+                                        "name": "VFS_SELECT_IN_RAM",
+                                        "range": null,
+                                        "title": "Make VFS driver select() callbacks IRAM-safe",
+                                        "type": "bool"
+                                    }
+                                ],
+                                "depends_on": "VFS_SUPPORT_IO && !LWIP_USE_ONLY_LWIP_SELECT",
+                                "help": "If enabled, select function is provided by the VFS component, and can be used\non peripheral file descriptors (such as UART) and sockets at the same time.\n\nIf disabled, the default select implementation will be provided by LWIP for\nsockets only.\n\nDisabling this option can reduce code size if support for \"select\" on UART file\ndescriptors is not required.",
+                                "id": "VFS_SUPPORT_SELECT",
+                                "name": "VFS_SUPPORT_SELECT",
+                                "range": null,
+                                "title": "Provide select function",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "VFS_SUPPORT_IO",
+                                "help": "Disabling this option can save memory when the support for termios.h is not required.",
+                                "id": "VFS_SUPPORT_TERMIOS",
+                                "name": "VFS_SUPPORT_TERMIOS",
+                                "range": null,
+                                "title": "Provide termios.h functions",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "VFS_SUPPORT_IO",
+                                "help": "Define maximum number of virtual filesystems that can be registered.",
+                                "id": "VFS_MAX_COUNT",
+                                "name": "VFS_MAX_COUNT",
+                                "range": [
+                                    1,
+                                    20
+                                ],
+                                "title": "Maximum Number of Virtual Filesystems",
+                                "type": "int"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "VFS_SUPPORT_IO",
+                                        "help": "Define maximum number of host filesystem mount points.",
+                                        "id": "VFS_SEMIHOSTFS_MAX_MOUNT_POINTS",
+                                        "name": "VFS_SEMIHOSTFS_MAX_MOUNT_POINTS",
+                                        "range": null,
+                                        "title": "Host FS: Maximum number of the host filesystem mount points",
+                                        "type": "int"
+                                    }
+                                ],
+                                "depends_on": "VFS_SUPPORT_IO",
+                                "id": "component-config-virtual-file-system-provide-basic-i-o-functions-host-file-system-i-o-semihosting-",
+                                "title": "Host File System I/O (Semihosting)",
+                                "type": "menu"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "VFS_SUPPORT_IO",
+                                "help": "If enabled, /dev/null VFS will be automatically initialized at startup.",
+                                "id": "VFS_INITIALIZE_DEV_NULL",
+                                "name": "VFS_INITIALIZE_DEV_NULL",
+                                "range": null,
+                                "title": "Initialize /dev/null VFS",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "If enabled, the following functions are provided by the VFS component.\n\nopen, close, read, write, pread, pwrite, lseek, fstat, fsync, ioctl, fcntl\n\nFilesystem drivers can then be registered to handle these functions\nfor specific paths.\n\nDisabling this option can save memory when the support for these functions\nis not required.\n\nNote that the following functions can still be used with socket file descriptors\nwhen this option is disabled:\n\nclose, read, write, ioctl, fcntl.",
+                        "id": "VFS_SUPPORT_IO",
+                        "name": "VFS_SUPPORT_IO",
+                        "range": null,
+                        "title": "Provide basic I/O functions",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-virtual-file-system",
+                "title": "Virtual file system",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice WL_SECTOR_SIZE>",
+                                "help": null,
+                                "id": "WL_SECTOR_SIZE_512",
+                                "name": "WL_SECTOR_SIZE_512",
+                                "range": null,
+                                "title": "512",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice WL_SECTOR_SIZE>",
+                                "help": null,
+                                "id": "WL_SECTOR_SIZE_4096",
+                                "name": "WL_SECTOR_SIZE_4096",
+                                "range": null,
+                                "title": "4096",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Sector size used by wear levelling library.\nYou can set default sector size or size that will\nfit to the flash device sector size.\n\nWith sector size set to 4096 bytes, wear levelling library is more\nefficient. However if FAT filesystem is used on top of wear levelling\nlibrary, it will need more temporary storage: 4096 bytes for each\nmounted filesystem and 4096 bytes for each opened file.\n\nWith sector size set to 512 bytes, wear levelling library will perform\nmore operations with flash memory, but less RAM will be used by FAT\nfilesystem library (512 bytes for the filesystem and 512 bytes for each\nfile opened).",
+                        "id": "component-config-wear-levelling-wear-levelling-library-sector-size",
+                        "name": "WL_SECTOR_SIZE",
+                        "title": "Wear Levelling library sector size",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "WL_SECTOR_SIZE",
+                        "name": "WL_SECTOR_SIZE",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice WL_SECTOR_MODE>",
+                                "help": null,
+                                "id": "WL_SECTOR_MODE_PERF",
+                                "name": "WL_SECTOR_MODE_PERF",
+                                "range": null,
+                                "title": "Performance",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice WL_SECTOR_MODE>",
+                                "help": null,
+                                "id": "WL_SECTOR_MODE_SAFE",
+                                "name": "WL_SECTOR_MODE_SAFE",
+                                "range": null,
+                                "title": "Safety",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": "WL_SECTOR_SIZE_512",
+                        "help": "Specify the mode to store data into flash:\n\n- In Performance mode a data will be stored to the RAM and then\n  stored back to the flash. Compared to the Safety mode, this operation is\n  faster, but if power will be lost when erase sector operation is in\n  progress, then the data from complete flash device sector will be lost.\n\n- In Safety mode data from complete flash device sector will be read from\n  flash, modified, and then stored back to flash.\n  Compared to the Performance mode, this operation is slower, but if\n  power is lost during erase sector operation, then the data from full\n  flash device sector will not be lost.",
+                        "id": "component-config-wear-levelling-sector-store-mode",
+                        "name": "WL_SECTOR_MODE",
+                        "title": "Sector store mode",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "WL_SECTOR_MODE",
+                        "name": "WL_SECTOR_MODE",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-wear-levelling",
+                "title": "Wear Levelling",
                 "type": "menu"
             }
         ],
