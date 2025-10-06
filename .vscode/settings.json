@@ -25,7 +25,11 @@
     "esp_log_timestamp.h": "c",
     "sdmmc_host.h": "c",
     "sdmmc_cmd.h": "c",
-    "esp_vfs_fat.h": "c"
+    "esp_vfs_fat.h": "c",
+    "i2c_types.h": "c",
+    "i2c.h": "c",
+    "i2c_periph.h": "c",
+    "portmacro.h": "c"
   },
   "idf.flashType": "UART"
 }
