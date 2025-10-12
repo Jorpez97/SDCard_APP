@@ -7,15 +7,17 @@
 #include "portmacro.h"
 
 
-const uint8_t TURN_ON_DISPLAY = 0x0C;
+const uint8_t TURN_ON_DISPLAY = 0x0E;
 const uint8_t TURN_OFF_DISPLAY  = 0x08;
 const uint8_t LCD_DISP_ADDR = 0x27;
+const uint8_t CLEAR_DISP = 0x01;  
+const uint8_t LETTER_H =   0x49;
 
 void LCDWrite()
 {
     esp_err_t err = ESP_OK;
     uint8_t dataarr[1];
-    dataarr[0] = TURN_OFF_DISPLAY;
+    dataarr[0] = LETTER_H;
     i2c_cmd_handle_t i2c_cmd = i2c_cmd_link_create();
     err = i2c_master_start(i2c_cmd);
      printf("RETURNED WITH CODE %d", err);
@@ -23,9 +25,9 @@ void LCDWrite()
      printf("RETURNED WITH CODE %d", err);
      err =  i2c_master_write(i2c_cmd, &dataarr[0], sizeof(dataarr), true);
      printf("RETURNED WITH CODE %d", err);
-    err = i2c_master_cmd_begin(I2C_NUM_0, i2c_cmd, portMAX_DELAY);
+    err = i2c_master_cmd_begin(I2C_NUM_0, i2c_cmd, 5000);
     {
-        printf("RETURNED WITH CODE %d", err);
+        printf("RETURNED WITH poop  %d\n", err);
     }
     vTaskDelay( 500 / portTICK_PERIOD_MS);
     i2c_master_stop(i2c_cmd);

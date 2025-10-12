@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "SDCardReader",
-    "project_version":    "9ba6029-dirty",
+    "project_version":    "c81861c-dirty",
     "project_path":       "C:/Users/jorpe/Documents/SDCardReader",
     "idf_path":           "C:/Users/jorpe/esp/v5.5.1/esp-idf",
     "build_dir":          "C:/Users/jorpe/Documents/SDCardReader/build",
@@ -726,11 +726,11 @@
             "type": "LIBRARY",
             "lib": "__idf_main",
             "reqs": [],
-            "priv_reqs": [ "spi_flash", "esp_driver_sdmmc", "fatfs", "vfs", "driver" ],
+            "priv_reqs": [ "spi_flash", "esp_driver_sdmmc", "fatfs", "vfs", "driver", "esp_driver_dac" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "C:/Users/jorpe/Documents/SDCardReader/build/esp-idf/main/libmain.a",
-            "sources": [ "C:/Users/jorpe/Documents/SDCardReader/main/LCDDriver.c", "C:/Users/jorpe/Documents/SDCardReader/main/I2CDriver.c", "C:/Users/jorpe/Documents/SDCardReader/main/SDCardRead.c", "C:/Users/jorpe/Documents/SDCardReader/main/hello_world_main.c" ],
+            "sources": [ "C:/Users/jorpe/Documents/SDCardReader/main/DACDriver.c", "C:/Users/jorpe/Documents/SDCardReader/main/LCDDriver.c", "C:/Users/jorpe/Documents/SDCardReader/main/I2CDriver.c", "C:/Users/jorpe/Documents/SDCardReader/main/SDCardRead.c", "C:/Users/jorpe/Documents/SDCardReader/main/hello_world_main.c" ],
             "include_dirs": []
         },
         "mbedtls": {
@@ -2188,7 +2188,7 @@
             "dir": "C:/Users/jorpe/Documents/SDCardReader/main",
             "lib": "__idf_main",
             "reqs": [],
-            "priv_reqs": [ "spi_flash", "esp_driver_sdmmc", "fatfs", "vfs", "driver" ],
+            "priv_reqs": [ "spi_flash", "esp_driver_sdmmc", "fatfs", "vfs", "driver", "esp_driver_dac" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": []

@@ -18,6 +18,7 @@
 #include "SDCardRead.h"
 #include "I2CDriver.h"
 #include "LCDDriver.h"
+#include "DACDriver.h"
 
 // sdmmc_card_t sd_card;
 //    sdmmc_host_t  sd_card_host = SDMMC_HOST_DEFAULT();
@@ -47,8 +48,9 @@
 
 void app_main(void)
 { 
-   config_i2c_driver();
-   LCDWrite();
+   cosineDac();
+   // config_i2c_driver();
+   // LCDWrite();
 //   ESP_LOGI(tag, "Failed WITH CODE ");
 //    sdmmc_host_init();
 //   ESP_LOGI(tag, "Failed WITH CODE ");
